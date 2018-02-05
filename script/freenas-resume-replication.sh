@@ -1,3 +1,4 @@
+#!/bin/bash
 SSH=/usr/local/bin/ssh
 DATASET_OR_ZVOL=$1
 REMOTE_IP=$2
@@ -12,8 +13,8 @@ echo 'TARGET_IP='$2
 echo 'TARGET_PORT='$3
 echo 'TARGET_LOCATION='$4
 
-/sbin/zfs send -V -p -i $DATASET_OR_ZVOL | /usr/local/bin/pigz | /usr/local/bin/pipewatcher $$ | /usr/local/bin/ssh $SSH_CMD_OPTIONS -p $REMOTE_PORT $REMOTE_IP "/usr/bin/env pigz -d | /sbin/zfs receive -F -d 'backup-pool/replication-local' && echo Succeeded"
-$ZFS_EXIT_CODE=$?
+/sbin/zfs send -V -p -i $DATASET_OR_ZVOL | /usr/local/bin/pigz | /usr/local/bin/pipewatcher $$ | /usr/local/bin/ssh $SSH_CMD_OPTIONS -p $REMOTE_PORT $REMOTE_IP "/usr/bin/env pigz -d | /sbin/zfs receive -F -d -s $TARGET_LOCATION && echo Succeeded"
+ZFS_EXIT_CODE=$?
 
 while [ $ZFS_EXIT_CODE -gt 0 ]
 do
