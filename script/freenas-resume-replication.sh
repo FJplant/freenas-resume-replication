@@ -9,6 +9,9 @@ ZFS_EXIT_CODE=1
 
 echo 'DATASET_OR_ZVOL='$1
 
+/sbin/zfs send -V -p -i $DATASET_OR_ZVOL | /usr/local/bin/pigz | /usr/local/bin/pipewatcher $$ | /usr/local/bin/ssh $SSH_CMD_OPTIONS -p $REMOTE_PORT $REMOTE_IP "/usr/bin/env pigz -d | /sbin/zfs receive -F -d 'backup-pool/replication-local' && echo Succeeded"
+$ZFS_EXIT_CODE=$?
+
 while [ $ZFS_EXIT_CODE -gt 0 ]
 do
     RECEIVE_RESUME_TOKEN=`$SSH $SSH_CMD_OPTIONS -p $REMOTE_PORT $REMOTE_IP "zfs get -p receive_resume_token | grep $DATASET_OR_ZVOL" 2> /dev/null | awk '{print $3'}`
