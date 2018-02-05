@@ -2,12 +2,12 @@
 SSH=/usr/local/bin/ssh
 REMOTE_IP=192.168.0.203
 REMOTE_PORT=22
-DATASET_OR_ZVOL=nfs-vmstore-01
+DATASET_OR_ZVOL=$1
 SSH_CMD_OPTIONS="-ononeenabled=yes -ononeswitch=yes -i /data/ssh/replication -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=7"
 RECEIVE_RESUME_TOKEN=""
 ZFS_EXIT_CODE=1
 
-echo $RESUME_TOKEN
+echo 'DATASET_OR_ZVOL='$1
 
 while [ $ZFS_EXIT_CODE -gt 0 ]
 do
